@@ -1,0 +1,27 @@
+<Tabs Tabs="{{Tabs}}" bindtabsChange="tabsItemChange"></Tabs>
+<view class="feedback">
+  <view class="feedback_title">提交爆料</view>
+  <view class="feedback_content">
+    <textarea value="{{inputText_name}}" bindinput="handleInputText" placeholder="请提交爆料商品名和图片"></textarea>
+    <view class="feedback_bool">
+      <view class="tool_add" bindtap="addImgs">+</view>
+      <view class="tool_item" wx:for="{{imageList}}" wx:key="index" bindtap="removeImgs" data-index="{{index}}">
+        <upLmg src="{{item}}"></upLmg>
+      </view>
+    </view>
+  </view>
+  <view class="feedback_content">
+    <textarea value="{{inputText_now}}" bindinput="handleInputText" placeholder="请提供商品现价"></textarea>
+
+  </view>
+  <view class="feedback_content">
+    <textarea value="{{inputText_origin}}" bindinput="handleInputText" placeholder="请提供商品原价"></textarea>
+
+  </view>
+  <view class="feedback_submit">
+    <button bindtap="handleFormSubmit" size="mini">
+      <icon type="success_no_circle" size="23" color="white"></icon>
+      提交
+    </button>
+  </view>
+</view>

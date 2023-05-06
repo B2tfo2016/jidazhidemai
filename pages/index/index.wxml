@@ -1,0 +1,66 @@
+<view class="page">
+  <view class="page__bd">
+    <view class="swiper-container">
+      <swiper class="swiper_box" autoplay="true" bindchange="swiperchange">
+        <block wx:for="{{bannerList}}" wx:key="*this">
+          <swiper-item>
+            <image bindtap="tapBanner" data-id="{{item.businessId}}" src="{{item.picUrl}}" />
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="dots">
+        <block wx:for="{{bannerList}}" wx:key="*this">
+          <view class="dot{{index == swiperCurrent ? ' active' : ''}}"></view>
+        </block>
+      </view>
+    </view>
+
+
+    <block wx:for="{{shopSubList}}">
+      <view class="weui-cells__title">{{item.name}}——买的放心，用的安心</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+          <view class="weui-cell__hd">
+          </view>
+          <view class="weui-cell__bd">学校</view>
+          <view class="weui-cell__ft">暨南大学珠海校区</view>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__hd">
+          </view>
+          <view class="weui-cell__bd">指导老师</view>
+          <view class="weui-cell__ft">陈双平</view>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__hd">
+          </view>
+          <view class="weui-cell__bd">Coder</view>
+          <view class="weui-cell__ft">周海晖</view>
+        </view>
+        <view class="weui-cell">
+          <view class="weui-cell__hd">
+          </view>
+          <view class="weui-cell__bd">联系电话</view>
+          <view class="weui-cell__ft" data-tel="15179727152" bindtap='callPhone'>15179727152</view>
+        </view>
+
+      </view>
+    </block>
+
+
+    
+    <view class='recommend-title'>推荐好价</view>
+    <view class="goods-container" wx:if="{{goodsRecommend.length > 0}}">
+      <view class="goods-box" wx:for-items="{{goodsRecommend}}" wx:key="*this" bindtap="toDetailsTap" data-id="{{item.id}}">
+        <view class="img-box">
+          <image src="{{item.pic}}_m" class="image" mode="aspectFill" lazy-load="true" />
+        </view>
+        <view class="goods-title">{{item.name}}</view>
+        <view class="goods-price">¥ {{item.minPrice}}</view>
+      </view>
+    </view>
+  </view>
+  <view class='page__ft'>
+    
+  </view>
+</view>
