@@ -5,30 +5,8 @@
     <view class='goods-price'>折后价： {{selectSizePrice}}元</view>
     <view class='goods-price'>原价： {{originalPrice}}元</view>
 
-    <view wx:if="{{goodsDetail.properties && goodsDetail.properties.length > 0}}" class="size-label-box">
-      <block wx:for="{{goodsDetail.properties}}" wx:for-item="property" wx:for-index="idx" wx:key="id">
-        <view class="label">{{property.name}}</view>
-        <view class="label-item-box">
-          <view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{property.childsCurGoods}}" wx:key="id" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertyid="{{property.id}}" data-propertyname="{{property.name}}" data-propertychildindex="{{index}}"
-            data-propertychildid="{{item.id}}" data-propertychildname="{{item.name}}">
-            {{item.name}}
-          </view>
-        </view>
-      </block>
-    </view>
 
-
-    
-    <view class="buy-num-box">
-      <view class="num-label">购买数量</view>
-      <view class="num-box">
-        <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numJianTap">-</view>
-        <view class="num-input">
-          <input type="number" value="{{buyNumber}}" disabled/>
-        </view>
-        <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numJiaTap">+</view>
-      </view>
-    </view>
+ 
     <view class='btns'>
       <view >
         <button class="weui-btn" type="primary" bindtap="goShopCar">前往收藏</button>
