@@ -9,7 +9,7 @@ Page({
       noSelect: false,
       list: []
     },
-    delBtnWidth: 120, //删除按钮宽度单位（rpx）
+    delBtnWidth: 120, 
   },
 
   //获取元素自适应后的实际宽度
@@ -38,7 +38,7 @@ Page({
   },
   onShow: function() {
     var shopList = [];
-    // 获取购物车数据
+    // 获取数据
     var shopCarInfoMem = wx.getStorageSync('shopCarInfo');
     if (shopCarInfoMem && shopCarInfoMem.shopList) {
       shopList = shopCarInfoMem.shopList
@@ -198,7 +198,7 @@ Page({
     var index = e.currentTarget.dataset.index;
     var list = that.data.goodsList.list;
     if (index !== "" && index != null) {
-      // 添加判断当前商品购买数量是否超过当前商品可购买库存
+     
       var carShopBean = list[parseInt(index)];
       var carShopBeanStores = 0;
       WXAPI.goodsDetail(carShopBean.goodsId).then(function(res) {
@@ -253,136 +253,10 @@ Page({
            }
      }
      */
-    // above codes that remove elements in a for statement may change the length of list dynamically
     list = list.filter(function(curGoods) {
       return !curGoods.active;
     });
     this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
-  },
-  toPayOrder: function() { // 去接下单结算
-    const token = wx.getStorageSync('token');
-    if (!token) {
-      app.goLoginPageTimeOut()
-      return
-    }
-    WXAPI.checkToken(token).then(function (res) {
-      if (res.code != 0) {
-        wx.removeStorageSync('token')
-        app.goLoginPageTimeOut()
-      }
-    })
-    wx.checkSession({
-      fail() {
-        app.goLoginPageTimeOut()
-      }
-    })
-    wx.showLoading();
-    var that = this;
-    if (this.data.goodsList.noSelect) {
-      wx.hideLoading();
-      return;
-    }
-    // 重新计算价格，判断库存
-    var shopList = [];
-    var shopCarInfoMem = wx.getStorageSync('shopCarInfo');
-    if (shopCarInfoMem && shopCarInfoMem.shopList) {
-      // shopList = shopCarInfoMem.shopList
-      shopList = shopCarInfoMem.shopList.filter(entity => {
-        return entity.active;
-      });
-    }
-    if (shopList.length == 0) {
-      wx.hideLoading();
-      return;
-    }
-    var isFail = false;
-    var doneNumber = 0;
-    var needDoneNUmber = shopList.length;
-    for (let i = 0; i < shopList.length; i++) {
-      if (isFail) {
-        wx.hideLoading();
-        return;
-      }
-      let carShopBean = shopList[i];
-      // 获取价格和库存
-      if (!carShopBean.propertyChildIds || carShopBean.propertyChildIds == "") {
-        WXAPI.goodsDetail(carShopBean.goodsId).then(function(res) {
-          doneNumber++;
-          if (res.data.properties) {
-            wx.showModal({
-              title: '提示',
-              content: res.data.basicInfo.name + ' 商品已失效，请重新购买',
-              showCancel: false
-            })
-            isFail = true;
-            wx.hideLoading();
-            return;
-          }
-          if (res.data.basicInfo.stores < carShopBean.number) {
-            wx.showModal({
-              title: '提示',
-              content: res.data.basicInfo.name + ' 库存不足，请重新购买',
-              showCancel: false
-            })
-            isFail = true;
-            wx.hideLoading();
-            return;
-          }
-          if (res.data.basicInfo.minPrice != carShopBean.price) {
-            wx.showModal({
-              title: '提示',
-              content: res.data.basicInfo.name + ' 价格有调整，请重新购买',
-              showCancel: false
-            })
-            isFail = true;
-            wx.hideLoading();
-            return;
-          }
-          if (needDoneNUmber == doneNumber) {
-            that.navigateToPayOrder();
-          }
-        })
-      } else {
-        WXAPI.goodsPrice({
-          goodsId: carShopBean.goodsId,
-          propertyChildIds: carShopBean.propertyChildIds
-        }).then(function(res) {
-          doneNumber++;
-          if (res.data.stores < carShopBean.number) {
-            wx.showModal({
-              title: '提示',
-              content: carShopBean.name + ' 库存不足，请重新购买',
-              showCancel: false
-            })
-            isFail = true;
-            wx.hideLoading();
-            return;
-          }
-          if (res.data.price != carShopBean.price) {
-            wx.showModal({
-              title: '提示',
-              content: carShopBean.name + ' 价格有调整，请重新购买',
-              showCancel: false
-            })
-            isFail = true;
-            wx.hideLoading();
-            return;
-          }
-          if (needDoneNUmber == doneNumber) {
-            that.navigateToPayOrder();
-          }
-        })
-      }
-
-    }
-  },
-  navigateToPayOrder: function() {
-    wx.hideLoading();
-    wx.navigateTo({
-      url: "/pages/to-pay-order/index"
-    })
   }
-
-
 
 })

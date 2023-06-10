@@ -34,7 +34,7 @@
         <view class="weui-cell">
           <view class="weui-cell__hd">
           </view>
-          <view class="weui-cell__bd">Coder</view>
+          <view class="weui-cell__bd">编码</view>
           <view class="weui-cell__ft">周海晖</view>
         </view>
         <view class="weui-cell">

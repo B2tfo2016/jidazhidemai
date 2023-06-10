@@ -2,14 +2,72 @@
   <view class="page__bd">
     <view class='goods-name'>{{goodsDetail.basicInfo.name}}</view>    
     <image wx:for="{{goodsDetail.pics}}" src="{{item.pic}}" class="goods-image" mode="widthFix" lazy-load="true" />
-    <view class='goods-price'>折后价： {{selectSizePrice}}元</view>
-    <view class='goods-price'>原价： {{originalPrice}}元</view>
+    <view class='goods-price'>现价 {{selectSizePrice}} 元</view>
+    <view class='goods-price'>原价 {{originalPrice}} 元</view>
+
+    <view class="container">
+     <!-- 分割线 -->
+  <view class="divLine"></view>
+</view>
+
+<view class="page__bd">
+
+<block wx:for="{{shopSubList}}">
+  <view class="weui-cells__title">爆料商品地址</view>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_access" hover-class="weui-cell_active" data-id="{{item.id}}" bindtap='goMap'>
+      <view class="weui-cell__hd">
+       
+      </view>
+      <view class="weui-cell__bd">暨南大学珠海校区</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">地图</view>
+    </view>
+    
+  </view>
+</block>
+</view>
+
+<view class="container">
+     <!-- 分割线 -->
+  <view class="divLine"></view>
+</view>
+
+    <text decode="{{true}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;值： {{a}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;不值：{{b}}</text>
+
+    <view class="container">
+    <canvas canvas-id="pieCanvas" class="canvas" style="height:300px" bindtouchstart="touchHandler"></canvas>
+</view>    
+<view class='btns'>
+      <view>
+        <button class="weui-btn" type="info" bindtap="zhide">值得</button>
+      </view>  
+      <view>
+        <button class="weui-btn" type="info" bindtap="buzhi">不值</button> 
+      </view>   
+    </view>
+
+    <view class="container">
+     <!-- 分割线 -->
+  <view class="divLine"></view>
+</view>
+
+<text decode="{{true}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7天商品价格曲线</text>
+
+<view class="container">
+    <canvas canvas-id="areaCanvas" class="canvas" style="height:300px" bindtouchstart="touchHandlerline"></canvas>
+</view>   
 
 
- 
+
+
+    <view class="container">
+     <!-- 分割线 -->
+  <view class="divLine"></view>
+</view>
+
     <view class='btns'>
-      <view >
-        <button class="weui-btn" type="primary" bindtap="goShopCar">前往收藏</button>
+      <view>
+        <button class="weui-btn" type="primary" bindtap="gocollect">前往收藏</button>
       </view>  
       <view>
         <button class="weui-btn" type="warn" bindtap="addShopCar">加入收藏</button> 
@@ -23,3 +81,4 @@
 <view wx:if="{{currentPages.length == 1}}" class='goIndex' bindtap="goIndex">
   <image class="goIndex-icon" src="/images/nav/home-on.png"></image>
 </view>
+

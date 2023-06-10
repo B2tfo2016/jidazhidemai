@@ -76,11 +76,17 @@
     }
   },
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "value": "/minitest",
+        "type": "folder"
+      }
+    ],
     "include": []
   },
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "testRoot": "minitest/"
 }

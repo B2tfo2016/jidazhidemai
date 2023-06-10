@@ -2,16 +2,11 @@ const WXAPI = require('../../wxapi/main')
 var app = getApp();
 Page({
 
-  /**
-   * 页面的初始数据
-   */
   data: {
 
   },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
+
   onLoad: function(options) {
 
   },
@@ -58,9 +53,7 @@ Page({
 
   },
 
-  /**
-   * 用户点击右上角分享
-   */
+
   onShareAppMessage: function() {
 
   },
@@ -73,7 +66,7 @@ Page({
       this.login();
     } else {
       wx.showToast({
-        title: '当前无网络',
+        title: 'fail',
         icon: 'none',
       })
     }
@@ -86,8 +79,8 @@ Page({
         if (res.code != 0) {
           wx.removeStorageSync('token')
           that.login();
+          wx.navigateBack();
         } else {
-          // 回到原来的地方放
           app.navigateToLogin = false
           wx.navigateBack();
         }
@@ -98,7 +91,6 @@ Page({
       success: function(res) {
         WXAPI.login(res.code).then(function(res) {
           if (res.code == 10000) {
-            // 去注册
             that.registerUser();
             return;
           }
@@ -125,17 +117,16 @@ Page({
     let that = this;
     wx.login({
       success: function(res) {
-        let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
+        let code = res.code; 
         wx.getUserInfo({
           success: function(res) {
             let iv = res.iv;
             let encryptedData = res.encryptedData;
-            let referrer = '' // 推荐人
+            let referrer = '' 
             let referrer_storge = wx.getStorageSync('referrer');
             if (referrer_storge) {
               referrer = referrer_storge;
             }
-            // 下面开始调用注册接口
             WXAPI.register( {
               code: code,
               encryptedData: encryptedData,

@@ -92,3 +92,67 @@
   height:50rpx;
   margin-top: 15rpx;
 }
+/*分割线样式*/
+.divLine{
+  background: #E0E3DA;
+  width: 100%;
+  height: 5rpx;
+ }
+
+ .canvas {
+  width: 750rpx;
+  height: 500rpx;
+}
+
+.goods-container{
+  display: flex;
+  justify-content: space-between;  
+  flex-wrap:wrap;
+  box-sizing: content-box;
+  padding: 24rpx;
+}
+.goods-box{
+  width: 339rpx;
+  height: 472rpx;
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  border-radius:5px;
+}
+.goods-box .img-box{
+  width: 339rpx;
+  height: 339rpx;
+  overflow: hidden;
+}
+.goods-box .img-box image{
+   width: 339rpx;
+   height: 339rpx;
+}
+.goods-box .goods-title{
+  width: 280rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 24rpx;
+  padding: 24rpx 0 0rpx 0;
+  color:#000;
+  margin-left: 24rpx;
+}
+.goods-box .goods-price{
+  width: 280rpx;
+  overflow: hidden;
+  font-size: 24rpx;
+  padding: 10rpx 0;
+  color:#e64340;
+  margin-left: 24rpx;
+}
+.weui-cells {
+  background:none;
+  font-size: 26rpx;
+  line-height: 26rpx;
+}
+.weui-cells image {
+  margin-right: 5px;
+  vertical-align: middle;
+  width:30rpx; 
+  height: 30rpx;
+}

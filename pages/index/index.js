@@ -68,10 +68,7 @@ Page({
     wx.setNavigationBarTitle({
       title: wx.getStorageSync('mallName')
     })
-    // /**
-    //  * 示例：
-    //  * 调用接口封装方法
-    //  */
+
     
     // WXAPI.goodsCategory().then(function(res) {
     //   let categories = [{
@@ -164,10 +161,8 @@ Page({
       title: wx.getStorageSync('mallName'),
       path: '/pages/index/index?inviter_id=' + wx.getStorageSync('uid'),
       success: function(res) {
-        // 转发成功
       },
       fail: function(res) {
-        // 转发失败
       }
     }
   },
@@ -187,7 +182,6 @@ Page({
     });
     this.getGoodsList(this.data.activeCategoryId);
   },
-  // 以下为搜索框事件
   showInput: function () {
     this.setData({
       inputShowed: true
@@ -209,7 +203,6 @@ Page({
       inputVal: e.detail.value
     });
   },
-  // 以下为砍价业务
   kanjiaGoods(){
     const _this = this
     WXAPI.kanjiaList().then(function (res) {
@@ -226,7 +219,7 @@ Page({
       url: "/pages/coupons/index"
     })
   },
-  pingtuanGoods(){ // 获取团购商品列表
+  pingtuanGoods(){ 
     const _this = this
     WXAPI.goods({
       pingtuan: true

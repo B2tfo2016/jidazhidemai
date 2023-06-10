@@ -1,29 +1,114 @@
 const WXAPI = require('../../wxapi/main')
 const app = getApp();
 const WxParse = require('../../wxParse/wxParse.js');
-
+var wxCharts = require("../../utils/wxcharts.js");//相对路径
+let a = Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10)
+let b = Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10)
+var pieChart = null;
+var areaChart = null;
 Page({
+
   data: {
+    
+    shopSubList: [],
     goodsDetail: {},
     selectSizePrice: 0,
-    originalPrice:0,
-    shopNum: 0, // 购物车中商品数量
+    originalPrice: 0,
+    shopNum: 0, // 商品数量
     buyNumber: 0,
     buyNumMin: 1,
     buyNumMax: 0,
-
+    a:a,
+    b:b,
     propertyChildIds: "",
     propertyChildNames: "",
-    canSubmit: false, //  选中规格尺寸时候是否允许加入购物车
+    canSubmit: false, 
     shopCarInfo: {},
     currentPages: undefined
+
   },
-  async onLoad(e) {
+  touchHandler: function (e) {
+    console.log(pieChart.getCurrentDataIndex(e));
+},
+touchHandlerline: function (e) {
+  console.log(areaChart.getCurrentDataIndex(e));
+  areaChart.showToolTip(e);
+},
+goMap(e){ // 打开地图
+  const id = e.currentTarget.dataset.id
+  const item = this.data.shopSubList.find(ele => {
+    return ele.id == id
+  })
+  wx.openLocation({
+    latitude: item.latitude,
+    longitude: item.longitude,
+    name: item.name,
+    address: item.address
+  })
+},
+  onLoad(e) {
+    var windowWidth = 320;
+        try {
+            var res = wx.getSystemInfoSync();
+            windowWidth = res.windowWidth;
+        } catch (e) {
+            console.error('getSystemInfoSync failed!');
+        }
+
+        pieChart = new wxCharts({
+            animation: true,
+            canvasId: 'pieCanvas',
+            type: 'pie',
+            series: [{
+                name: '值得',
+                data: a,
+            }, {
+                name: '不值得',
+                data: b,
+            }],
+            width: windowWidth,
+            height: 300,
+            dataLabel: true,
+        });
+        areaChart = new wxCharts({
+          canvasId: 'areaCanvas',
+          type: 'area',
+          categories: ['1', '2', '3', '4', '5', '6','7'],
+          animation: true,
+          series: [{
+              name: '价格走向',
+              data: [Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10),Math.floor(Math.random()*10)+10*Math.floor(Math.random()*10)],
+              format: function (val) {
+                  return val.toFixed(2) ;
+              }
+          }],
+          yAxis: {
+              title: '价格',
+              format: function (val) {
+                  return val.toFixed(2);
+              },
+              min: 0,
+              fontColor: '#8085e9',
+              gridColor: '#8085e9',
+              titleFontColor: '#f7a35c'
+          },
+          xAxis: {
+              fontColor: '#7cb5ec',
+              gridColor: '#7cb5ec'
+          },
+          extra: {
+              legendTextColor: '#cb2431'
+          },
+          width: windowWidth,
+          height: 300
+      });
+        
+
     console.log(e)
     this.data.goodsId = e.id
     const that = this
     this.data.kjJoinUid = e.kjJoinUid
-    // 获取购物车数据
+    // 获取数据
     wx.getStorage({
       key: 'shopCarInfo',
       success: function(res) {
@@ -34,8 +119,19 @@ Page({
         });
       }
     })
+    
   },
+
   onShow (){
+    const _this = this
+    WXAPI.shopSubList().then(res => {
+      if (res.code === 0) {
+        _this.setData({
+          shopSubList: res.data
+        })
+      }
+    })
+  
     wx.setClipboardData({
       data: 'data',
       success(res) {
@@ -52,6 +148,8 @@ Page({
       }
     })
     this.getGoodsDetailAndKanjieInfo(this.data.goodsId)
+    
+
   },
   async getGoodsDetailAndKanjieInfo(goodsId) {
     const that = this;
@@ -62,6 +160,8 @@ Page({
         that.setData({
           selectSizePrice: goodsDetailRes.data.basicInfo.minPrice,
           originalPrice:goodsDetailRes.data.basicInfo.originalPrice,
+          a:a,
+          b:b
         });
       }
       if (goodsDetailRes.data.basicInfo.pingtuan) {
@@ -72,6 +172,8 @@ Page({
         goodsDetail: goodsDetailRes.data,
         selectSizePrice: goodsDetailRes.data.basicInfo.minPrice,
         originalPrice:goodsDetailRes.data.basicInfo.originalPrice,
+        a:a,
+        b:b,
         buyNumMax: goodsDetailRes.data.basicInfo.stores,
         buyNumber: (goodsDetailRes.data.basicInfo.stores > 0) ? 1 : 0,
         currentPages: getCurrentPages()
@@ -79,7 +181,6 @@ Page({
       if (goodsKanjiaSetRes.code == 0) {
         _data.curGoodsKanjia = goodsKanjiaSetRes.data
         that.data.kjId = goodsKanjiaSetRes.data.id
-        // 获取当前砍价进度
         if (!that.data.kjJoinUid) {
           that.data.kjJoinUid = wx.getStorageSync('uid')
         }
@@ -102,9 +203,19 @@ Page({
       WxParse.wxParse('article', 'html', goodsDetailRes.data.content, that, 5);
     }
   },
-  goShopCar: function() {
+  gocollect: function() {
     wx.reLaunch({
       url: "/pages/collect-cart/index"
+    });
+  },
+  zhide(options) {
+    this.setData({
+      a: a + 1
+    });
+  },
+  buzhi(options) {
+    this.setData({
+      b: b + 1
     });
   },
   numJianTap: function() {
@@ -125,10 +236,7 @@ Page({
       })
     }
   },
-  /**
-   * 选择商品规格
-   * @param {Object} e
-   */
+
   labelItemTap: function(e) {
     const that = this;
     // 取消该分类下的子栏目所有的选中状态
@@ -138,7 +246,6 @@ Page({
     }
     // 设置当前选中状态
     that.data.goodsDetail.properties[e.currentTarget.dataset.propertyindex].childsCurGoods[e.currentTarget.dataset.propertychildindex].active = true;
-    // 获取所有的选中规格尺寸数据
     var needSelectNum = that.data.goodsDetail.properties.length;
     var curSelectNum = 0;
     var propertyChildIds = "";
@@ -157,21 +264,6 @@ Page({
     if (needSelectNum == curSelectNum) {
       canSubmit = true;
     }
-    // 计算当前价格
-    if (canSubmit) {
-      WXAPI.goodsPrice({
-        goodsId: that.data.goodsDetail.basicInfo.id,
-        propertyChildIds: propertyChildIds
-      }).then(function(res) {
-        that.setData({
-          selectSizePrice: res.data.price,
-          propertyChildIds: propertyChildIds,
-          propertyChildNames: propertyChildNames,
-          buyNumMax: res.data.stores,
-          buyNumber: (res.data.stores > 0) ? 1 : 0
-        });
-      })
-    }
 
 
     this.setData({
@@ -180,27 +272,18 @@ Page({
     })
   },
   /**
-   * 加入购物车
+   * 加入收藏
    */
   addShopCar: function() {
     if (this.data.goodsDetail.properties && !this.data.canSubmit) {
       if (!this.data.canSubmit) {
         wx.showModal({
-          content: '请选择商品具体规格',
+          content: '1',
           showCancel: false
         })
       }
       return;
     }
-    if (this.data.buyNumber < 1) {
-      wx.showModal({
-        title: '提示',
-        content: '购买数量不能为0！',
-        showCancel: false
-      })
-      return;
-    }
-    //组建购物车
     var shopCarInfo = this.bulidShopCarInfo();
 
     this.setData({
@@ -214,7 +297,7 @@ Page({
       data: shopCarInfo
     })
     wx.showToast({
-      title: '已收藏',
+      title: '加入成功',
       icon: 'success'
     })
   },
@@ -262,23 +345,6 @@ Page({
     }
     shopCarInfo.kjId = this.data.kjId;
     return shopCarInfo;
-  },
-  onShareAppMessage: function() {
-    let _data = {
-      title: this.data.goodsDetail.basicInfo.name,
-      path: '/pages/goods-details/index?id=' + this.data.goodsDetail.basicInfo.id + '&inviter_id=' + wx.getStorageSync('uid'),
-      success: function(res) {
-        // 转发成功
-      },
-      fail: function(res) {
-        // 转发失败
-      }
-    }
-    if (this.data.kjJoinUid) {
-      _data.title = this.data.curKanjiaprogress.joiner.nick + '邀请您帮TA砍价'
-      _data.path += '&kjJoinUid=' + this.data.kjJoinUid
-    }
-    return _data
   },
   goIndex() {
     wx.switchTab({
